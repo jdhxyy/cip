@@ -10,9 +10,9 @@ cip会自动从需求文件中拉取github或者gitee等仓库中的包，也可
 pip install cip
 ```
 
-cip依赖git包,也需要安装:
+cip依赖gitpython包,也需要安装:
 ```text
-pip install git
+pip install gitpython
 ```
 
 ## 开源
