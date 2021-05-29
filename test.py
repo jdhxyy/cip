@@ -11,7 +11,7 @@ def case1():
 
 
 def case2():
-    cip.set_lib_path('d:\\package\\lib')
+    cip.set_lib_path('d:\\package\\clib')
     cip.set_requirements('F:\\common_project\\cip\\requirements.txt')
     cip.update()
 

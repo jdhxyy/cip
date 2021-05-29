@@ -22,7 +22,7 @@ pip install git
 ## API
 ```python
 def set_lib_path(path=None):
-    """设置库目录.默认是命令行当前目录下的lib目录"""
+    """设置库目录.默认是命令行当前目录下的clib目录"""
 
 def set_requirements(path=None):
     """设置需求文件.默认是库目录同级的requirements.txt文件"""

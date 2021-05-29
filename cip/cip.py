@@ -9,7 +9,7 @@ import os
 import re
 
 
-_path = os.getcwd() + '\\lib'
+_path = os.getcwd() + '\\clib'
 _requirements = os.getcwd() + '\\requirements.txt'
 
 
@@ -17,7 +17,7 @@ def set_lib_path(path=None):
     """设置库目录.默认是命令行当前目录下的lib目录"""
     global _path
     if path is None:
-        _path = os.getcwd() + '\\lib'
+        _path = os.getcwd() + '\\clib'
     else:
         _path = path
     if not os.path.exists(_path):
