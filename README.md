@@ -38,3 +38,11 @@ def update(path=None):
 import cip
 cip.update()
 ```
+
+## 依赖指定版本
+cip可以依赖指定版本，再需求文件中指定。比如在需求文件中写：
+```buildoutcfg
+https://github.com/jdhxyy/lagan-clang.git v0.9
+```
+
+则cip会拉去tag为v0.9的版本。

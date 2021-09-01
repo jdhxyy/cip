@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 filepath = 'README.md'
 setup(
         name="cip",
-        version="1.3",
+        version="1.4",
         description="c/c++ install package",
         long_description=open(filepath, encoding='utf-8').read(),
         long_description_content_type="text/markdown",

@@ -54,7 +54,7 @@ def update(path=None):
         for line in f.readlines():
             if line.isspace():
                 continue
-            line = line.replace(' ', '').replace('\\n', '').replace('\\t', '').replace('\\r', '').strip()
+            line = line.replace('\\n', '').replace('\\t', '').replace('\\r', '').strip()
             _update_git(line)
 
 
@@ -64,21 +64,42 @@ def _update_git(path):
         print('git path is wrong format:', path)
         return
 
+    arr = path.split(' ')
+    if len(arr) > 2:
+        print('git path is wrong format:', path)
+        return
+
+    # 解析处git仓库的地址和要求的版本
+    path = arr[0]
+    version = None
+    if len(arr) == 2:
+        version = arr[1]
+
     if not os.path.exists(dir_name):
         os.mkdir(dir_name)
         # 新建仓库拉取代码
         git.Repo.clone_from(path, dir_name)  # 拉取远程代码
-        print(path, 'clone success')
+        if version is not None:
+            repo = git.Git(dir_name)
+            repo.execute('git checkout %s' % version)
+            print('%s %s clone success' % (path, version))
+        else:
+            print('%s clone success' % path)
         return
 
     repo = git.Git(dir_name)
     repo.execute('git clean -df')
     repo.execute('git checkout -- .')
     repo.execute('git pull origin master')
-    print(path, ' is up-to-date')
+    if version is not None:
+        repo.execute('git checkout %s' % version)
+        print('%s %s is up-to-date' % (path, version))
+    else:
+        print('%s is up-to-date' % path)
 
 
 def _parse_dir_from_git_path(path: str):
+    path = path.split(' ')[0]
     if not path.endswith('.git'):
         return None
     data = path.split('.')

@@ -12,12 +12,12 @@ def case1():
 
 def case2():
     cip.set_lib_path('d:\\package\\clib')
-    cip.set_requirements('F:\\common_project\\cip\\requirements.txt')
+    cip.set_requirements('d:\\package\\requirements.txt')
     cip.update()
 
 
 def case3():
-    cip.update('https://github.com/jdhxyy/lagan-micropython.git')
+    cip.update('https://github.com/jdhxyy/lagan-clang.git')
 
 
 def case4():
