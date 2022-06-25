@@ -3,10 +3,12 @@ Copyright 2021-2021 The jdh99 Authors. All rights reserved.
 cip: C/C++ Install Package.C/C++下的包管理工具
 Authors: jdh99 <jdh821@163.com>
 """
+import shutil
 
 import git
 import os
 import re
+import stat
 
 
 _path = os.getcwd() + '\\clib'
@@ -75,27 +77,11 @@ def _update_git(path):
     if len(arr) == 2:
         version = arr[1]
 
-    if not os.path.exists(dir_name):
-        os.mkdir(dir_name)
-        # 新建仓库拉取代码
-        git.Repo.clone_from(path, dir_name)  # 拉取远程代码
-        if version is not None:
-            repo = git.Git(dir_name)
-            repo.execute('git checkout %s' % version)
-            print('%s %s clone success' % (path, version))
-        else:
-            print('%s clone success' % path)
-        return
-
-    repo = git.Git(dir_name)
-    repo.execute('git clean -df')
-    repo.execute('git checkout -- .')
-    repo.execute('git pull origin master')
-    if version is not None:
-        repo.execute('git checkout %s' % version)
-        print('%s %s is up-to-date' % (path, version))
-    else:
-        print('%s is up-to-date' % path)
+    for i in range(3):
+        if _update(path, dir_name, version):
+            return
+        # 删除所有文件
+        _rmtree(dir_name)
 
 
 def _parse_dir_from_git_path(path: str):
@@ -105,3 +91,70 @@ def _parse_dir_from_git_path(path: str):
     data = path.split('.')
     data = re.split(r'[/\\]', data[-2])
     return _path + '\\' + data[-1]
+
+
+def _rmtree(top):
+    for root, dirs, files in os.walk(top, topdown=False):
+        for name in files:
+            filename = os.path.join(root, name)
+            os.chmod(filename, stat.S_IWUSR)
+            os.remove(filename)
+        for name in dirs:
+            os.rmdir(os.path.join(root, name))
+    os.rmdir(top)
+
+
+def _update(path, dir_name, version):
+    if not os.path.exists(dir_name):
+        os.mkdir(dir_name)
+        # 新建仓库拉取代码
+        try:
+            git.Repo.clone_from(path, dir_name)  # 拉取远程代码
+            if version is not None:
+                repo = git.Git(dir_name)
+                repo.execute('git checkout %s' % version)
+                print('%s %s clone success' % (path, version))
+            else:
+                print('%s clone success' % path)
+            return True
+        except:
+            print('%s clone failed1!' % path)
+            return False
+    else:
+        try:
+            git.Repo(dir_name)
+        except:
+            # 不存在仓库
+            # 删除所有文件
+            _rmtree(dir_name)
+
+            os.mkdir(dir_name)
+            # 新建仓库拉取代码
+            try:
+                git.Repo.clone_from(path, dir_name)  # 拉取远程代码
+                if version is not None:
+                    repo = git.Git(dir_name)
+                    repo.execute('git checkout %s' % version)
+                    print('%s %s clone success' % (path, version))
+                else:
+                    print('%s clone success' % path)
+                return True
+            except:
+                print('%s clone failed2!' % path)
+                return False
+
+    try:
+        repo = git.Git(dir_name)
+        repo.execute('git clean -df')
+        repo.execute('git checkout -- .')
+        repo.execute('git pull origin master')
+
+        if version is not None:
+            repo.execute('git checkout %s' % version)
+            print('%s %s is up-to-date' % (path, version))
+        else:
+            print('%s is up-to-date' % path)
+        return True
+    except:
+        print('%s pull failed!' % path)
+        return False
